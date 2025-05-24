@@ -16,24 +16,13 @@ app.get('/',(req,res)=>{
 app.get('/home',(req,res)=>{
     res.send('<h1>Welcome to Home Page</h1>')
 })
-app.post('/api/v1/register',(req,res)=>{
-   var username = req.body.FirstName;
-   var htmlData = 'Hello:' + username;
-   
-
+app.post('/api/v1/register',async (req,res)=>{
    let request=(req.body);
    console.log(request);
-
-
-   // ---Create and Save the Document ---
-const saveUser = async (request) => {
-  try {
-    // Create a new instance of the User model with your data
-    const newUser = new User(JSON.stringify(request));
-
-    // Save the new user to the database
+   
+   try{
+    const newUser = new User(request);
     const savedUser = await newUser.save();
-
     console.log('User saved successfully:', savedUser);
   } catch (error) {
     console.error('Error saving user:', error);
@@ -41,14 +30,10 @@ const saveUser = async (request) => {
     // Optionally close the connection after saving
     // mongoose.connection.close();
   }
-};
+  res.send('Hello',request.FirstName);
+});
 
- saveUser();
- res.send(htmlData);
-  
-})
 
-console.log(uri);
 
 
 app.listen(process.env.PORT,()=>console.log(`SERVER STARTED ON PORT: ${PORT} ..`))
@@ -81,12 +66,25 @@ async function run() {
 run().catch(console.dir);
 
 
-
-
 // Call the function to save the user data
 // We add a small delay or check connection status in a real app,
 // but for this example, we'll assume the connection will be up.
-mongoose.connection.once('open', () => {
-    saveUser(userData);
-    console.log(userData);
-});
+// mongoose.connection.once('open', () => {
+//     saveUser(userData);
+//     console.log(userData);
+// });
+
+
+
+mongoose.connect(process.env.DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+     
+      console.log('Connected to MongoDB');
+      // Call saveUser() here or after this connection is established
+    });
