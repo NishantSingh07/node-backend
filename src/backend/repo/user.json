@@ -1,0 +1,8 @@
+{
+    "FirstName": "vijay",
+    "LastName": "yadav",
+    "Email":{
+        "email": "abc@gmail.com",
+        "password": "test123"
+    }
+}
